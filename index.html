@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Be My Valentine? 💕</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .container {
+        text-align: center;
+        background: white;
+        padding: 60px 40px;
+        border-radius: 30px;
+        box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+        max-width: 500px;
+        position: relative;
+      }
+
+      h1 {
+        color: #ff69b4;
+        font-size: 3em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.2);
+      }
+
+      .hearts {
+        font-size: 2em;
+        margin-bottom: 30px;
+      }
+
+      .question {
+        font-size: 1.8em;
+        color: #ff1493;
+        margin-bottom: 40px;
+        font-weight: bold;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        position: relative;
+        min-height: 80px;
+      }
+
+      button {
+        padding: 20px 50px;
+        font-size: 1.3em;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: box-shadow 0.2s;
+      }
+
+      .yes-btn {
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        color: white;
+        box-shadow: 0 5px 20px rgba(255, 20, 147, 0.4);
+      }
+
+      .yes-btn:hover {
+        box-shadow: 0 8px 30px rgba(255, 20, 147, 0.6);
+      }
+
+      .no-btn {
+        background: linear-gradient(135deg, #ffc0cb, #ffb6c1);
+        color: #ff1493;
+        box-shadow: 0 5px 20px rgba(255, 182, 193, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .celebration {
+        display: none;
+      }
+
+      .celebration.active {
+        display: block;
+        animation: fadeIn 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .celebration-img {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 20px;
+        margin: 20px 0;
+      }
+
+      .celebration h3 {
+        color: #ff1493;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #ff69b4;
+        position: absolute;
+        animation: confetti-fall 3s linear infinite;
+      }
+
+      @keyframes confetti-fall {
+        to {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .floating-hearts {
+        position: fixed;
+        font-size: 30px;
+        animation: float-up 4s ease-in infinite;
+        opacity: 0;
+      }
+
+      @keyframes float-up {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100vh) rotate(180deg);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="question-section">
+        <!-- CHANGE YOUR IMAGE HERE: Replace the URL below with your own image link -->
+        <img
+          src="flower.jpeg"
+          alt="Heart"
+          style="
+            width: 200px;
+            height: 270px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+          "
+        />
+        <p class="question">Will you be my Valentine?</p>
+        <p
+          id="message"
+          style="
+            color: #ff69b4;
+            font-size: 0.9em;
+            min-height: 25px;
+            margin-bottom: 20px;
+          "
+        ></p>
+        <div class="buttons">
+          <button class="yes-btn" onclick="sayYes()">Yes!</button>
+          <button
+            class="no-btn"
+            id="noBtn"
+            onmouseover="moveButton()"
+            onclick="moveButton()"
+          >
+            No
+          </button>
+        </div>
+      </div>
+
+      <div class="celebration" id="celebration">
+        <h3>Hehe I knew it <br />Thanks for saying yes!</h3>
+        <!-- CHANGE YOUR CELEBRATION IMAGE HERE: Replace the URL below with your own image link -->
+        <img
+          src="celebration.png"
+          alt="Celebration!"
+          class="celebration-img"
+          style="
+            width: 250px;
+            height: 337.5px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+          "
+        />
+        <p style="font-size: 1.5em; color: #ff69b4; margin-top: 20px">
+          I can't wait to spend Valentine's Day with you!
+        </p>
+      </div>
+    </div>
+
+    <script>
+      function moveButton() {
+        const noBtn = document.getElementById("noBtn");
+        const container = document.querySelector(".buttons");
+        const message = document.getElementById("message");
+
+        // Array of random messages
+        const messages = [
+          "Wrong answer!",
+          "Are you sure?",
+          "Are you very sure?",
+          "Try again.",
+          "Nope.",
+          "Weally?",
+          "One more chance!",
+          "The correct answer is yes!",
+          "Just say yes already!",
+        ];
+
+        // Display random message
+        const randomMessage =
+          messages[Math.floor(Math.random() * messages.length)];
+        message.textContent = randomMessage;
+
+        // Get container dimensions
+        const containerRect = container.getBoundingClientRect();
+
+        // Random position within a larger range
+        const maxX = 400;
+        const maxY = 250;
+
+        const randomX = Math.floor(Math.random() * maxX) - maxX / 2;
+        const randomY = Math.floor(Math.random() * maxY) - maxY / 2;
+
+        noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+      }
+
+      function sayYes() {
+        document.getElementById("question-section").style.display = "none";
+        document.getElementById("celebration").classList.add("active");
+
+        // Create floating hearts
+        for (let i = 0; i < 20; i++) {
+          setTimeout(() => {
+            createFloatingHeart();
+          }, i * 200);
+        }
+
+        // Create confetti
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            createConfetti();
+          }, i * 100);
+        }
+      }
+
+      function createFloatingHeart() {
+        const heart = document.createElement("div");
+        heart.className = "floating-hearts";
+        heart.innerHTML = "💕";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.bottom = "0px";
+        heart.style.animationDelay = Math.random() * 2 + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 4000);
+      }
+
+      function createConfetti() {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.top = "-10px";
+        confetti.style.background = [
+          "#ff69b4",
+          "#ff1493",
+          "#ffc0cb",
+          "#ff6ec7",
+        ][Math.floor(Math.random() * 4)];
+        confetti.style.animationDelay = Math.random() * 3 + "s";
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.remove();
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
