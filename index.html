@@ -27,8 +27,15 @@
         padding: 60px 40px;
         border-radius: 30px;
         box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
-        max-width: 500px;
+        max-width: 600px;
+        width: 100%;
+        height: 700px;
+        max-height: 700px;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
       }
 
       h1 {
@@ -157,7 +164,6 @@
   <body>
     <div class="container">
       <div id="question-section">
-        <!-- CHANGE YOUR IMAGE HERE: Replace the URL below with your own image link -->
         <img
           src="flower.jpeg"
           alt="Heart"
@@ -193,7 +199,6 @@
 
       <div class="celebration" id="celebration">
         <h3>Hehe I knew it <br />Thanks for saying yes!</h3>
-        <!-- CHANGE YOUR CELEBRATION IMAGE HERE: Replace the URL below with your own image link -->
         <img
           src="celebration.png"
           alt="Celebration!"
@@ -214,6 +219,7 @@
     <script>
       function moveButton() {
         const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.querySelector(".yes-btn");
         const container = document.querySelector(".buttons");
         const message = document.getElementById("message");
 
@@ -225,8 +231,8 @@
           "Try again.",
           "Nope.",
           "Weally?",
-          "One more chance!",
-          "The correct answer is yes!",
+          "You hate me...",
+          "Choose yes!",
           "Just say yes already!",
         ];
 
@@ -235,15 +241,53 @@
           messages[Math.floor(Math.random() * messages.length)];
         message.textContent = randomMessage;
 
-        // Get container dimensions
-        const containerRect = container.getBoundingClientRect();
+        // Get yes button and message positions
+        const yesRect = yesBtn.getBoundingClientRect();
+        const noRect = noBtn.getBoundingClientRect();
+        const messageRect = message.getBoundingClientRect();
 
-        // Random position within a larger range
-        const maxX = 400;
-        const maxY = 250;
+        let randomX, randomY;
+        let attempts = 0;
+        const maxAttempts = 50;
 
-        const randomX = Math.floor(Math.random() * maxX) - maxX / 2;
-        const randomY = Math.floor(Math.random() * maxY) - maxY / 2;
+        // Keep trying until we find a position that doesn't overlap
+        do {
+          // Random position within a larger range
+          const maxX = 400;
+          const maxY = 250;
+
+          randomX = Math.floor(Math.random() * maxX) - maxX / 2;
+          randomY = Math.floor(Math.random() * maxY) - maxY / 2;
+
+          // Calculate where the No button would be with this transform
+          const newLeft = noRect.left + randomX;
+          const newTop = noRect.top + randomY;
+          const newRight = newLeft + noRect.width;
+          const newBottom = newTop + noRect.height;
+
+          // Check if it would overlap with Yes button (with some padding)
+          const padding = 20;
+          const wouldOverlapYes = !(
+            newRight < yesRect.left - padding ||
+            newLeft > yesRect.right + padding ||
+            newBottom < yesRect.top - padding ||
+            newTop > yesRect.bottom + padding
+          );
+
+          // Check if it would overlap with message area
+          const wouldOverlapMessage = !(
+            newRight < messageRect.left - padding ||
+            newLeft > messageRect.right + padding ||
+            newBottom < messageRect.top - padding ||
+            newTop > messageRect.bottom + padding
+          );
+
+          if (!wouldOverlapYes && !wouldOverlapMessage) {
+            break;
+          }
+
+          attempts++;
+        } while (attempts < maxAttempts);
 
         noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
       }
